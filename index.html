@@ -110,7 +110,7 @@ form { display: grid; gap: 24px; }
 fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 10px; min-width: 0; }
 legend, .label { font-weight: 700; font-size: 17px; padding: 0; margin-bottom: 10px; }
 .hint { font-weight: 400; color: var(--muted); font-size: 15px; }
-input[type="text"], input[type="number"] {
+input[type="text"], input[type="number"], input[type="tel"] {
   width: 100%;
   font: inherit;
   color: var(--ink);
@@ -194,6 +194,12 @@ footer p { margin: 0; }
         <p class="field-error" id="name-error" hidden>נא לכתוב שם כדי שנדע מי מגיע.</p>
       </div>
 
+      <div>
+        <label class="label" for="phone">טלפון</label>
+        <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" dir="ltr" style="text-align:right">
+        <p class="field-error" id="phone-error" hidden>נא לכתוב מספר טלפון.</p>
+      </div>
+
       <fieldset>
         <legend>מתי תצטרפו אלינו?</legend>
         <label class="choice"><input type="radio" id="when-both" name="attendance" value="בבוקר לכותל ובהמשך למסעדה" required> בבוקר לכותל ובהמשך למסעדה</label>
@@ -260,6 +266,7 @@ footer p { margin: 0; }
   function validate() {
     var bad = false;
     bad = show('name-error', !form.name.value.trim()) || bad;
+    bad = show('phone-error', document.getElementById('phone').value.replace(/\D/g, '').length < 9) || bad;
     var a = attendance();
     bad = show('when-error', !a) || bad;
     bad = show('guests-error', !countWrap.hidden && !(parseInt(guests.value, 10) >= 1)) || bad;
@@ -280,7 +287,7 @@ footer p { margin: 0; }
     if (document.getElementById('hp').value) return;
     function val(sel) { var el = form.querySelector(sel); return (el && el.value.trim()) || '—'; }
     var data = new URLSearchParams();
-    data.append('entry.429974619', val('#name'));
+    data.append('entry.429974619', val('#name') + ' | ' + val('#phone'));
     data.append('entry.1928300551', val('input[name="attendance"]:checked'));
     data.append('entry.937702086', countWrap.hidden ? '0' : val('#guests'));
     data.append('entry.561523110', val('input[name="shuttle"]:checked'));
