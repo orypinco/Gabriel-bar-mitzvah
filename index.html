@@ -184,9 +184,8 @@ footer p { margin: 0; }
 
     <p class="note">תהיה הסעה הלוך וחזור בין המסעדה לכותל, ויש חניון ליד המסעדה. נשמח שתמלאו כדי שנוכל להתארגן.</p>
 
-    <form id="rsvp" action="https://formspree.io/f/xbglbane" method="POST" novalidate>
-      <input type="hidden" name="_subject" value="אישור הגעה - בר המצווה של גבריאל">
-      <p class="hp"><label>לא למילוי <input name="_gotcha" tabindex="-1" autocomplete="off"></label></p>
+    <form id="rsvp" novalidate>
+      <p class="hp"><label>לא למילוי <input id="hp" name="hp" tabindex="-1" autocomplete="off"></label></p>
 
       <div>
         <label class="label" for="name">שם / שם המשפחה</label>
@@ -233,6 +232,7 @@ footer p { margin: 0; }
 
 <script>
 (function () {
+  var GOOGLE_FORM = 'https://docs.google.com/forms/d/e/1FAIpQLSfaqEw9JjJO7ynnW88b_0V4iEq0Q4Irbpdaf6ObSceW658X3g/formResponse';
   var form = document.getElementById('rsvp');
   var countWrap = document.getElementById('count-wrap');
   var shuttleWrap = document.getElementById('shuttle-wrap');
@@ -276,9 +276,16 @@ footer p { margin: 0; }
     }
     submitBtn.disabled = true;
     submitBtn.textContent = 'שולחים…';
-    fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) })
-      .then(function (res) {
-        if (!res.ok) throw new Error(res.status);
+    if (document.getElementById('hp').value) return;
+    function val(sel) { var el = form.querySelector(sel); return (el && el.value.trim()) || '—'; }
+    var data = new URLSearchParams();
+    data.append('entry.429974619', val('#name'));
+    data.append('entry.1928300551', val('input[name="attendance"]:checked'));
+    data.append('entry.937702086', countWrap.hidden ? '0' : val('#guests'));
+    data.append('entry.561523110', val('input[name="shuttle"]:checked'));
+    // Google Forms does not allow cross-origin reads, so the response is opaque; a network failure still rejects.
+    fetch(GOOGLE_FORM, { method: 'POST', mode: 'no-cors', body: data })
+      .then(function () {
         var no = attendance() === 'when-no';
         document.getElementById('thanks-title').textContent = no ? 'תודה שעדכנתם' : 'תודה, נתראה!';
         document.getElementById('thanks-text').textContent = no ? 'חבל שלא תוכלו להגיע, נחשוב עליכם ❤️' : 'קיבלנו את האישור שלכם. מחכים לחגוג איתכם 🎉';
