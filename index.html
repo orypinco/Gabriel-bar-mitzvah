@@ -184,9 +184,9 @@ footer p { margin: 0; }
 
     <p class="note">תהיה הסעה הלוך וחזור בין המסעדה לכותל, ויש חניון ליד המסעדה. נשמח שתמלאו כדי שנוכל להתארגן.</p>
 
-    <form id="rsvp" name="rsvp-gavriel" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
-      <input type="hidden" name="form-name" value="rsvp-gavriel">
-      <p class="hp"><label>לא למילוי <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+    <form id="rsvp" action="https://formspree.io/f/xbglbane" method="POST" novalidate>
+      <input type="hidden" name="_subject" value="אישור הגעה - בר המצווה של גבריאל">
+      <p class="hp"><label>לא למילוי <input name="_gotcha" tabindex="-1" autocomplete="off"></label></p>
 
       <div>
         <label class="label" for="name">שם / שם המשפחה</label>
@@ -276,8 +276,7 @@ footer p { margin: 0; }
     }
     submitBtn.disabled = true;
     submitBtn.textContent = 'שולחים…';
-    var body = new URLSearchParams(new FormData(form)).toString();
-    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body })
+    fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(form) })
       .then(function (res) {
         if (!res.ok) throw new Error(res.status);
         var no = attendance() === 'when-no';
