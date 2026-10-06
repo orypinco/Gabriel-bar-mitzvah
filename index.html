@@ -202,7 +202,7 @@ footer p { margin: 0; }
         <p class="field-error" id="when-error" hidden>נא לבחור אחת מהאפשרויות.</p>
       </fieldset>
 
-      <div id="count-wrap" hidden>
+      <div id="count-wrap">
         <label class="label" for="guests">כמה תהיו? <span class="hint">כולל ילדים</span></label>
         <input type="number" id="guests" name="guests" min="1" max="30" inputmode="numeric">
         <p class="field-error" id="guests-error" hidden>נא לכתוב כמה תהיו (לפחות 1).</p>
@@ -248,7 +248,7 @@ footer p { margin: 0; }
 
   function sync() {
     var a = attendance();
-    countWrap.hidden = !a || a === 'when-no';
+    countWrap.hidden = a === 'when-no';
     shuttleWrap.hidden = a !== 'when-both';
     if (shuttleWrap.hidden) form.querySelectorAll('input[name="shuttle"]').forEach(function (r) { r.checked = false; });
     if (countWrap.hidden) guests.value = '';
