@@ -158,6 +158,18 @@ footer p { margin: 0; }
   .slot { grid-template-columns: 60px 1fr; }
   .time { font-size: 20px; }
 }
+.cal { display: grid; gap: 10px; margin-top: 14px; }
+.cal-title { font-weight: 700; font-size: 16px; color: var(--muted); }
+.cal-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.cal-btns a {
+  flex: 1 1 180px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-weight: 700; font-size: 17px; text-decoration: none;
+  color: var(--blue); border: 1.5px solid var(--blue); border-radius: 6px;
+  padding: 12px 16px;
+}
+.cal-btns a:hover { background: color-mix(in srgb, var(--blue) 8%, var(--card)); }
+.cal-btns a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
@@ -228,6 +240,13 @@ footer p { margin: 0; }
     <div class="thanks" id="thanks" hidden>
       <h2 id="thanks-title">תודה!</h2>
       <p id="thanks-text">קיבלנו את האישור שלכם.</p>
+      <div class="cal" id="cal" hidden>
+        <div class="cal-title">הוספה ליומן · 19.10.2026, <span id="cal-time" dir="ltr">9:45</span></div>
+        <div class="cal-btns">
+          <a id="cal-google" href="#" target="_blank" rel="noopener">📅 Google Calendar</a>
+          <a id="cal-ics" href="gabriel-morning.ics">🍎 iPhone / Outlook</a>
+        </div>
+      </div>
     </div>
 
     <footer>
@@ -260,6 +279,25 @@ footer p { margin: 0; }
     if (countWrap.hidden) guests.value = '';
   }
   form.querySelectorAll('input[name="attendance"]').forEach(function (r) { r.addEventListener('change', sync); });
+
+  // Times in UTC: Israel is on UTC+3 on 19.10.2026 (9:45 = 06:45Z, 12:30 = 09:30Z, end 15:00 = 12:00Z)
+  function setupCalendar(morning) {
+    var page = 'https://orypinco.github.io/Gabriel-bar-mitzvah/';
+    var details = morning
+      ? '9:45 יציאה לכותל\n12:30 ארוחת צהריים במסעדת אנג׳ליקה, רחוב ג׳ורג׳ וושינגטון 4, ירושלים\n' + page
+      : '12:30 ארוחת צהריים במסעדת אנג׳ליקה\n' + page;
+    var q = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: 'בר המצווה של גבריאל 🎉',
+      dates: (morning ? '20261019T064500Z' : '20261019T093000Z') + '/20261019T120000Z',
+      details: details,
+      location: morning ? 'הכותל המערבי, ירושלים' : 'מסעדת אנג׳ליקה, רחוב ג׳ורג׳ וושינגטון 4, ירושלים'
+    });
+    document.getElementById('cal-google').href = 'https://calendar.google.com/calendar/render?' + q.toString();
+    document.getElementById('cal-ics').href = morning ? 'gabriel-morning.ics' : 'gabriel-lunch.ics';
+    document.getElementById('cal-time').textContent = morning ? '9:45' : '12:30';
+    document.getElementById('cal').hidden = false;
+  }
 
   function show(id, on) { document.getElementById(id).hidden = !on; return on; }
 
@@ -298,6 +336,7 @@ footer p { margin: 0; }
         var no = attendance() === 'when-no';
         document.getElementById('thanks-title').textContent = no ? 'תודה שעדכנתם' : 'תודה, נתראה!';
         document.getElementById('thanks-text').textContent = no ? 'חבל שלא תוכלו להגיע, נחשוב עליכם ❤️' : 'קיבלנו את האישור שלכם. מחכים לחגוג איתכם 🎉';
+        if (!no) setupCalendar(attendance() === 'when-both');
         form.hidden = true;
         document.getElementById('thanks').hidden = false;
       })

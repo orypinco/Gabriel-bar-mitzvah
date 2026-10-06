@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Gabriel Bar Mitzvah//HE
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:gabriel-morning@orypinco.github.io
+DTSTAMP:20261006T120000Z
+DTSTART:20261019T064500Z
+DTEND:20261019T120000Z
+SUMMARY:בר המצווה של גבריאל 🎉
+LOCATION:הכותל המערבי\, ירושלים
+DESCRIPTION:9:45 יציאה לכותל\n12:30 ארוחת צהריים במסעדת אנג׳ליקה\, רחוב ג׳ורג׳ וושינגטון 4\, ירושלים\nhttps://orypinco.github.io/Gabriel-bar-mitzvah/
+BEGIN:VALARM
+TRIGGER:-PT2H
+ACTION:DISPLAY
+DESCRIPTION:בר המצווה של גבריאל
+END:VALARM
+END:VEVENT
+END:VCALENDAR
